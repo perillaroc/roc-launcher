@@ -2,7 +2,7 @@ include(../../roc-launcher.pri)
 
 QT       += core gui widgets
 
-TARGET = app
+TARGET = roc_launcher
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -30,3 +30,6 @@ HEADERS += \
 
 FORMS += \
     launcher_widget.ui
+
+RESOURCES += \
+    media.qrc
