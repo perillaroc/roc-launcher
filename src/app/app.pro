@@ -1,6 +1,6 @@
 include(../../roc-launcher.pri)
 
-QT       += core gui widgets
+QT       += core gui widgets sql
 
 TARGET = roc_launcher
 TEMPLATE = app
@@ -23,10 +23,12 @@ DESTDIR = $$build_bin_dir
 
 SOURCES += \
         main.cpp \
-    launcher_widget.cpp
+    launcher_widget.cpp \
+    database_manager.cpp
 
 HEADERS += \
-    launcher_widget.h
+    launcher_widget.h \
+    database_manager.h
 
 FORMS += \
     launcher_widget.ui

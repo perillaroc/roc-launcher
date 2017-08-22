@@ -8,6 +8,8 @@ QT_BEGIN_NAMESPACE
 class QMenu;
 QT_END_NAMESPACE
 
+class DatabaseManager;
+
 namespace Ui {
 class LauncherWidget;
 }
@@ -30,8 +32,12 @@ private:
     void createSystemTray();
     void setupActions();
 
+    void showSystemTrayContextMenu();
+
     Ui::LauncherWidget *ui;
 
     QPointer<QMenu> system_tray_menu_;
     QPointer<QSystemTrayIcon> system_tray_icon_;
+
+    QPointer<DatabaseManager> database_manager_;
 };
