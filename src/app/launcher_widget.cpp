@@ -23,6 +23,7 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
 //    QString data_dir = application_dir + "/../data";
 
     database_manager_->initDatabase();
+    database_manager_->buildLinks();
 }
 
 LauncherWidget::~LauncherWidget()
