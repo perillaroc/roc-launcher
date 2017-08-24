@@ -2,6 +2,15 @@
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
+#include <QVector>
+
+
+struct Link{
+    int id_;
+    QString name_;
+    QString location_;
+    QString icon_path_;
+};
 
 
 class DatabaseManager: public QObject
@@ -14,7 +23,7 @@ public:
 
     void buildLinks();
 
-    void queryLinks(const QString &str);
+    QVector<Link> queryLinks(const QString &str);
 
 private:
     void checkDatabase();

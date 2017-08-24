@@ -6,6 +6,7 @@
 
 QT_BEGIN_NAMESPACE
 class QMenu;
+class QStandardItemModel;
 QT_END_NAMESPACE
 
 class DatabaseManager;
@@ -28,6 +29,8 @@ protected:
 private slots:
     void slotSystemTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
+    void slotInputTextChanged(const QString &text);
+
 private:
     void createSystemTray();
     void setupActions();
@@ -40,4 +43,6 @@ private:
     QPointer<QSystemTrayIcon> system_tray_icon_;
 
     QPointer<DatabaseManager> database_manager_;
+
+    QPointer<QStandardItemModel> link_model_;
 };

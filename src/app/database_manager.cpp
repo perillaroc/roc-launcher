@@ -8,6 +8,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlRecord>
 #include <QtDebug>
 
 DatabaseManager::DatabaseManager(QObject *parent):
@@ -55,9 +56,41 @@ void DatabaseManager::buildLinks()
     }
 }
 
-void DatabaseManager::queryLinks(const QString &str)
+QVector<Link> DatabaseManager::queryLinks(const QString &str)
 {
+    QVector<Link> links;
+    if(str.isEmpty())
+    {
+        return links;
+    }
     QSqlQuery query(db_);
+    QString sql = "SELECT * FROM links WHERE lower(name) LIKE :query "
+            "ORDER BY (CASE WHEN lower(name) = :exact_query THEN 1 "
+            "WHEN lower(name) LIKE :left_query THEN 2 ELSE 3 END)";
+    query.prepare(sql);
+    query.bindValue(":query", "%" + str + "%");
+    query.bindValue(":exact_query", str);
+    query.bindValue(":left_query", str + "%");
+    if(!query.exec())
+    {
+        qDebug()<<"[DatabaseManager::queryLinks] db error:"<<query.lastError().driverText();
+        return links;
+    }
+
+    while(query.next())
+    {
+        QSqlRecord record = query.record();
+        int id = record.value("id").toInt();
+        QString name = record.value("name").toString();
+        QString location = record.value("location").toString();
+        Link link;
+        link.id_ = id;
+        link.name_ = name;
+        link.location_ = location;
+        links.push_back(link);
+    }
+
+    return links;
 }
 
 void DatabaseManager::checkDatabase()

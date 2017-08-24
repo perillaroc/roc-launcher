@@ -4,20 +4,26 @@
 #include <QMenu>
 #include <QCloseEvent>
 #include <QCoreApplication>
+#include <QStandardItemModel>
 
 #include "database_manager.h"
 
 LauncherWidget::LauncherWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LauncherWidget),
-    database_manager_{new DatabaseManager{this}}
+    database_manager_{new DatabaseManager{this}},
+    link_model_{new QStandardItemModel{this}}
 {
     ui->setupUi(this);
+    ui->link_view->setModel(link_model_);
+    ui->link_view->hide();
     createSystemTray();
     setupActions();
 
     system_tray_icon_->show();
     connect(system_tray_icon_, &QSystemTrayIcon::activated, this, &LauncherWidget::slotSystemTrayIconActivated);
+
+    connect(ui->input_edit, &QLineEdit::textChanged, this, &LauncherWidget::slotInputTextChanged);
 
 //    QString application_dir = QCoreApplication::applicationDirPath();
 //    QString data_dir = application_dir + "/../data";
@@ -54,6 +60,26 @@ void LauncherWidget::slotSystemTrayIconActivated(QSystemTrayIcon::ActivationReas
     default:
         break;
     }
+}
+
+void LauncherWidget::slotInputTextChanged(const QString &text)
+{
+    QVector<Link> links = database_manager_->queryLinks(text);
+    link_model_->clear();
+    if(links.isEmpty())
+    {
+        ui->link_view->hide();
+        return;
+    }
+
+    QStandardItem *root = link_model_->invisibleRootItem();
+    foreach(Link link, links)
+    {
+        QStandardItem *item = new QStandardItem{link.name_};
+        root->appendRow(item);
+    }
+    ui->link_view->show();
+    ui->name_label->setText(root->child(0)->text());
 }
 
 void LauncherWidget::createSystemTray()
