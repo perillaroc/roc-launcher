@@ -5,6 +5,7 @@
 #include <QCloseEvent>
 #include <QCoreApplication>
 #include <QStandardItemModel>
+#include <QtDebug>
 
 #include "database_manager.h"
 
@@ -24,6 +25,8 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
     connect(system_tray_icon_, &QSystemTrayIcon::activated, this, &LauncherWidget::slotSystemTrayIconActivated);
 
     connect(ui->input_edit, &QLineEdit::textChanged, this, &LauncherWidget::slotInputTextChanged);
+    connect(ui->link_view, &QListView::activated, this, &LauncherWidget::slotLinkSelected);
+    connect(ui->link_view, &QListView::pressed, this, &LauncherWidget::slotLinkSelected);
 
 //    QString application_dir = QCoreApplication::applicationDirPath();
 //    QString data_dir = application_dir + "/../data";
@@ -52,6 +55,9 @@ void LauncherWidget::slotSystemTrayIconActivated(QSystemTrayIcon::ActivationReas
     {
     case QSystemTrayIcon::Trigger:
     case QSystemTrayIcon::DoubleClick:
+        ui->link_view->hide();
+        ui->input_edit->setFocus();
+        ui->input_edit->selectAll();
         showNormal();
         break;
     case QSystemTrayIcon::Context:
@@ -76,10 +82,19 @@ void LauncherWidget::slotInputTextChanged(const QString &text)
     foreach(Link link, links)
     {
         QStandardItem *item = new QStandardItem{link.name_};
+        item->setData(QVariant::fromValue<Link>(link), LauncherItemRole::LinkRole);
         root->appendRow(item);
     }
     ui->link_view->show();
-    ui->name_label->setText(root->child(0)->text());
+
+    selectLink(links.first());
+}
+
+void LauncherWidget::slotLinkSelected(const QModelIndex &index)
+{
+    QStandardItem *item = link_model_->itemFromIndex(index);
+    Link link = item->data(LauncherItemRole::LinkRole).value<Link>();
+    qDebug()<<"[LauncherWidget::slotLinkSelected] link selected:"<< link.name_;
 }
 
 void LauncherWidget::createSystemTray()
@@ -109,4 +124,10 @@ void LauncherWidget::setupActions()
 void LauncherWidget::showSystemTrayContextMenu()
 {
     system_tray_menu_->exec(QCursor::pos());
+}
+
+void LauncherWidget::selectLink(const Link &link)
+{
+    current_link_ = link;
+    ui->name_label->setText(link.name_);
 }

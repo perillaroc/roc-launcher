@@ -4,6 +4,8 @@
 #include <QPointer>
 #include <QSystemTrayIcon>
 
+#include "link.h"
+
 QT_BEGIN_NAMESPACE
 class QMenu;
 class QStandardItemModel;
@@ -14,6 +16,10 @@ class DatabaseManager;
 namespace Ui {
 class LauncherWidget;
 }
+
+enum LauncherItemRole{
+    LinkRole = Qt::UserRole + 100
+};
 
 class LauncherWidget : public QWidget
 {
@@ -30,12 +36,15 @@ private slots:
     void slotSystemTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void slotInputTextChanged(const QString &text);
+    void slotLinkSelected(const QModelIndex &index);
 
 private:
     void createSystemTray();
     void setupActions();
 
     void showSystemTrayContextMenu();
+
+    void selectLink(const Link &link);
 
     Ui::LauncherWidget *ui;
 
@@ -45,4 +54,5 @@ private:
     QPointer<DatabaseManager> database_manager_;
 
     QPointer<QStandardItemModel> link_model_;
+    Link current_link_;
 };

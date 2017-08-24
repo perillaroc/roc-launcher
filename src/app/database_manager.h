@@ -4,14 +4,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QVector>
 
-
-struct Link{
-    int id_;
-    QString name_;
-    QString location_;
-    QString icon_path_;
-};
-
+#include "link.h"
 
 class DatabaseManager: public QObject
 {
@@ -37,3 +30,5 @@ private:
 
     QSqlDatabase db_;
 };
+
+Q_DECLARE_METATYPE(Link)

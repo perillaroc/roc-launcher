@@ -28,7 +28,8 @@ SOURCES += \
 
 HEADERS += \
     launcher_widget.h \
-    database_manager.h
+    database_manager.h \
+    link.h
 
 FORMS += \
     launcher_widget.ui
