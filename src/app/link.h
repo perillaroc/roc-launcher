@@ -6,7 +6,7 @@ struct Link{
     int id_;
     QString name_;
     QString location_;
-    QIcon icon_;
+    QPixmap icon_;
 
     bool isEmpty() const
     {

@@ -1,6 +1,6 @@
 include(../../roc-launcher.pri)
 
-QT       += core gui widgets sql winextras
+QT       += core gui widgets sql winextras concurrent
 
 TARGET = roc_launcher
 TEMPLATE = app

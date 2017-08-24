@@ -8,8 +8,10 @@
 #include <QCloseEvent>
 #include <QCoreApplication>
 #include <QStandardItemModel>
-#include <QProcess>
 #include <QFileInfo>
+#include <QProcess>
+#include <QtConcurrent>
+
 #include <QtDebug>
 
 LauncherWidget::LauncherWidget(QWidget *parent) :
@@ -44,8 +46,13 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
 //    QString application_dir = QCoreApplication::applicationDirPath();
 //    QString data_dir = application_dir + "/../data";
 
-    database_manager_->initDatabase();
-    database_manager_->buildLinks();
+    QtConcurrent::run([=](){
+        qDebug()<<"[LauncherWidget] run begin";
+        database_manager_->initDatabase();
+        database_manager_->buildLinks();
+        qDebug()<<"[LauncherWidget] run end";
+    });
+    qDebug()<<"[LauncherWidget] create end.";
 }
 
 LauncherWidget::~LauncherWidget()
@@ -98,7 +105,7 @@ void LauncherWidget::slotInputTextChanged(const QString &text)
         QStandardItem *item = new QStandardItem{link.name_};
         item->setData(QVariant::fromValue<Link>(link), LauncherItemRole::LinkRole);
         item->setData(link.location_, Qt::ToolTipRole);
-        item->setIcon(link.icon_);
+        item->setIcon(QIcon(link.icon_));
         root->appendRow(item);
     }
     ui->link_view->show();
@@ -159,9 +166,7 @@ void LauncherWidget::selectLink(const Link &link)
     }
     current_link_ = link;
     ui->name_label->setText(link.name_);
-    QFileInfo link_info{link.location_};
-    QPixmap pixmap = loadIcon(link_info.symLinkTarget());
-    ui->icon_label->setPixmap(pixmap);
+    ui->icon_label->setPixmap(link.icon_);
 }
 
 void LauncherWidget::selectLink()

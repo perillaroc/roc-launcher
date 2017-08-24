@@ -2,6 +2,7 @@
 
 #include "lnk_tool.h"
 
+#include <QBuffer>
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QDirIterator>
@@ -85,13 +86,14 @@ QVector<Link> DatabaseManager::queryLinks(const QString &str)
         int id = record.value("id").toInt();
         QString name = record.value("name").toString();
         QString location = record.value("location").toString();
+        QByteArray buffer = record.value("icon").toByteArray();
+        QPixmap pixmap;
+        pixmap.loadFromData(buffer);
         Link link;
         link.id_ = id;
         link.name_ = name;
         link.location_ = location;
-//        QPixmap pixmap = loadIcon(link.location_);
-//        QIcon icon{pixmap};
-//        link.icon_ = icon;
+        link.icon_ = pixmap;
         links.push_back(link);
     }
 
@@ -149,7 +151,7 @@ void DatabaseManager::createTableLinks()
                   "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                   "`location` TEXT NOT NULL UNIQUE,"
                   "`name` TEXT NOT NULL,"
-                  "`icon` TEXT,"
+                  "`icon` BLOB,"
                   "`update_time` TEXT,"
                   "`visit` INTEGER"
                   ");";
@@ -185,20 +187,28 @@ void DatabaseManager::buildLinksForDirPath(const QString &dir)
     while (it.hasNext()) {
         QString item = it.next();
         QFileInfo file_info{item};
-        QString file_name = file_info.baseName();
+        QString file_name = file_info.completeBaseName();
         QString file_location = file_info.absoluteFilePath();
+        QString target_file_path = file_info.symLinkTarget();
         QDateTime now = QDateTime::currentDateTime();
         QString update_time = now.toString("yyyy-MM-dd hh:mm:ss");
+
+        QPixmap pixmap = loadIcon(target_file_path);
+        QByteArray byte_array;
+        QBuffer buffer( &byte_array );
+        buffer.open( QIODevice::WriteOnly );
+        pixmap.save( &buffer, "PNG" );
 //        qDebug()<<file_name<<file_location<<update_time;
 
         QSqlQuery query(db_);
-        QString sql = "INSERT INTO links (location, name, update_time, visit) VALUES "
-                      "(:location, :name, :update_time, :visit);";
+        QString sql = "INSERT INTO links (location, name, update_time, visit, icon) VALUES "
+                      "(:location, :name, :update_time, :visit, :icon);";
         query.prepare(sql);
         query.bindValue(":location", file_location);
         query.bindValue(":name", file_name);
         query.bindValue(":update_time", update_time);
         query.bindValue(":visit", 0);
+        query.bindValue(":icon", byte_array);
         if(query.exec())
         {
             // qDebug()<<"[DatabaseManager::buildLinksForDirPath] insert successfully.";
