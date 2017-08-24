@@ -15,6 +15,11 @@ void InputLinkLineEdit::keyPressEvent(QKeyEvent *e)
         emit signalKeyDownPressed();
         e->ignore();
     }
+    else if(e->key() == Qt::Key_Escape)
+    {
+        emit signalKeyEscPressed();
+        e->ignore();
+    }
     else
     {
         QLineEdit::keyPressEvent(e);

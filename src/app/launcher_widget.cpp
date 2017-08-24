@@ -1,6 +1,9 @@
 #include "launcher_widget.h"
 #include "ui_launcher_widget.h"
 
+#include "database_manager.h"
+#include "lnk_tool.h"
+
 #include <QMenu>
 #include <QCloseEvent>
 #include <QCoreApplication>
@@ -8,9 +11,6 @@
 #include <QProcess>
 #include <QFileInfo>
 #include <QtDebug>
-
-#include "database_manager.h"
-#include "lnk_tool.h"
 
 LauncherWidget::LauncherWidget(QWidget *parent) :
     QWidget(parent),
@@ -32,6 +32,12 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
         openLink(current_link_);
     });
     connect(ui->input_edit, &InputLinkLineEdit::signalKeyDownPressed, this, &LauncherWidget::slotInputKeyDownPressed);
+    connect(ui->input_edit, &InputLinkLineEdit::signalKeyEscPressed, [=](){
+        if(system_tray_icon_->isVisible())
+        {
+            hide();
+        }
+    });
     connect(ui->link_view, &QListView::activated, this, &LauncherWidget::slotLinkClicked);
     connect(ui->link_view, &QListView::pressed, this, &LauncherWidget::slotLinkClicked);
 

@@ -10,6 +10,7 @@ public:
 
 signals:
     void signalKeyDownPressed();
+    void signalKeyEscPressed();
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
