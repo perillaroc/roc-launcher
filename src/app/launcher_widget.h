@@ -36,7 +36,8 @@ private slots:
     void slotSystemTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void slotInputTextChanged(const QString &text);
-    void slotLinkSelected(const QModelIndex &index);
+    void slotInputKeyDownPressed();
+    void slotLinkClicked(const QModelIndex &index);
 
 private:
     void createSystemTray();
@@ -45,6 +46,8 @@ private:
     void showSystemTrayContextMenu();
 
     void selectLink(const Link &link);
+    void selectLink();
+    void openLink(const Link &link);
 
     Ui::LauncherWidget *ui;
 

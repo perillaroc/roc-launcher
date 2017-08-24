@@ -5,9 +5,12 @@
 #include <QCloseEvent>
 #include <QCoreApplication>
 #include <QStandardItemModel>
+#include <QProcess>
+#include <QFileInfo>
 #include <QtDebug>
 
 #include "database_manager.h"
+#include "lnk_tool.h"
 
 LauncherWidget::LauncherWidget(QWidget *parent) :
     QWidget(parent),
@@ -25,8 +28,12 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
     connect(system_tray_icon_, &QSystemTrayIcon::activated, this, &LauncherWidget::slotSystemTrayIconActivated);
 
     connect(ui->input_edit, &QLineEdit::textChanged, this, &LauncherWidget::slotInputTextChanged);
-    connect(ui->link_view, &QListView::activated, this, &LauncherWidget::slotLinkSelected);
-    connect(ui->link_view, &QListView::pressed, this, &LauncherWidget::slotLinkSelected);
+    connect(ui->input_edit, &QLineEdit::returnPressed, [=](){
+        openLink(current_link_);
+    });
+    connect(ui->input_edit, &InputLinkLineEdit::signalKeyDownPressed, this, &LauncherWidget::slotInputKeyDownPressed);
+    connect(ui->link_view, &QListView::activated, this, &LauncherWidget::slotLinkClicked);
+    connect(ui->link_view, &QListView::pressed, this, &LauncherWidget::slotLinkClicked);
 
 //    QString application_dir = QCoreApplication::applicationDirPath();
 //    QString data_dir = application_dir + "/../data";
@@ -75,6 +82,7 @@ void LauncherWidget::slotInputTextChanged(const QString &text)
     if(links.isEmpty())
     {
         ui->link_view->hide();
+        selectLink();
         return;
     }
 
@@ -83,6 +91,8 @@ void LauncherWidget::slotInputTextChanged(const QString &text)
     {
         QStandardItem *item = new QStandardItem{link.name_};
         item->setData(QVariant::fromValue<Link>(link), LauncherItemRole::LinkRole);
+        item->setData(link.location_, Qt::ToolTipRole);
+        item->setIcon(link.icon_);
         root->appendRow(item);
     }
     ui->link_view->show();
@@ -90,11 +100,19 @@ void LauncherWidget::slotInputTextChanged(const QString &text)
     selectLink(links.first());
 }
 
-void LauncherWidget::slotLinkSelected(const QModelIndex &index)
+void LauncherWidget::slotInputKeyDownPressed()
+{
+    ui->link_view->setFocus();
+}
+
+void LauncherWidget::slotLinkClicked(const QModelIndex &index)
 {
     QStandardItem *item = link_model_->itemFromIndex(index);
     Link link = item->data(LauncherItemRole::LinkRole).value<Link>();
-    qDebug()<<"[LauncherWidget::slotLinkSelected] link selected:"<< link.name_;
+    qDebug()<<"[LauncherWidget::slotLinkSelected] link selected:"<< link.location_;
+
+    selectLink(link);
+    openLink(link);
 }
 
 void LauncherWidget::createSystemTray()
@@ -128,6 +146,34 @@ void LauncherWidget::showSystemTrayContextMenu()
 
 void LauncherWidget::selectLink(const Link &link)
 {
+   if(link.isEmpty())
+    {
+        selectLink();
+        return;
+    }
     current_link_ = link;
     ui->name_label->setText(link.name_);
+    QFileInfo link_info{link.location_};
+    QPixmap pixmap = loadIcon(link_info.symLinkTarget());
+    ui->icon_label->setPixmap(pixmap);
+}
+
+void LauncherWidget::selectLink()
+{
+    current_link_ = Link();
+    ui->name_label->setText("");
+    ui->icon_label->setPixmap(QPixmap());
+}
+
+void LauncherWidget::openLink(const Link &link)
+{
+    if(system_tray_icon_->isVisible())
+    {
+        hide();
+    }
+
+    if(!QProcess::startDetached("cmd.exe", QStringList()<<"/C"<<link.location_))
+    {
+        qWarning()<<"[LauncherWidget::slotLinkSelected] start process failed";
+    }
 }

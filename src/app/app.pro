@@ -1,6 +1,6 @@
 include(../../roc-launcher.pri)
 
-QT       += core gui widgets sql
+QT       += core gui widgets sql winextras
 
 TARGET = roc_launcher
 TEMPLATE = app
@@ -20,16 +20,22 @@ INCLUDEPATH += ../libs
 
 DESTDIR = $$build_bin_dir
 
+LIBS += -lshell32 -luser32
+
 
 SOURCES += \
         main.cpp \
     launcher_widget.cpp \
-    database_manager.cpp
+    database_manager.cpp \
+    lnk_tool.cpp \
+    input_link_line_edit.cpp
 
 HEADERS += \
     launcher_widget.h \
     database_manager.h \
-    link.h
+    link.h \
+    lnk_tool.h \
+    input_link_line_edit.h
 
 FORMS += \
     launcher_widget.ui

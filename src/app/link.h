@@ -1,13 +1,14 @@
 #pragma once
 #include <QString>
+#include <QIcon>
 
 struct Link{
     int id_;
     QString name_;
     QString location_;
-    QString icon_path_;
+    QIcon icon_;
 
-    bool isEmpty()
+    bool isEmpty() const
     {
         return location_.isEmpty();
     }

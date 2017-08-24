@@ -1,5 +1,7 @@
 #include "database_manager.h"
 
+#include "lnk_tool.h"
+
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QDirIterator>
@@ -87,6 +89,9 @@ QVector<Link> DatabaseManager::queryLinks(const QString &str)
         link.id_ = id;
         link.name_ = name;
         link.location_ = location;
+//        QPixmap pixmap = loadIcon(link.location_);
+//        QIcon icon{pixmap};
+//        link.icon_ = icon;
         links.push_back(link);
     }
 

@@ -120,7 +120,7 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <widget class="QLineEdit" name="input_edit">
+    <widget class="InputLinkLineEdit" name="input_edit">
      <property name="minimumSize">
       <size>
        <width>450</width>
@@ -165,6 +165,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>InputLinkLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>input_link_line_edit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="media.qrc"/>
  </resources>
