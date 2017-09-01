@@ -4,6 +4,8 @@
 #include "database_manager.h"
 #include "lnk_tool.h"
 
+#include <qhotkey.h>
+
 #include <QMenu>
 #include <QCloseEvent>
 #include <QCoreApplication>
@@ -18,7 +20,8 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LauncherWidget),
     database_manager_{new DatabaseManager{this}},
-    link_model_{new QStandardItemModel{this}}
+    link_model_{new QStandardItemModel{this}},
+    hot_key_{new QHotkey{this}}
 {
     ui->setupUi(this);
     ui->link_view->setModel(link_model_);
@@ -42,6 +45,18 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
     });
     connect(ui->link_view, &QListView::activated, this, &LauncherWidget::slotLinkClicked);
     connect(ui->link_view, &QListView::pressed, this, &LauncherWidget::slotLinkClicked);
+
+    connect(hot_key_, &QHotkey::activated, this, [=](){
+        if(this->isHidden())
+        {
+            ui->link_view->hide();
+            ui->input_edit->setFocus();
+            ui->input_edit->selectAll();
+            showNormal();
+        }
+    });
+    hot_key_->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_Space), true);
+    qDebug()<<"[LauncherWidget::LauncherWidget] hot key is registered:"<<hot_key_->isRegistered();
 
 //    QString application_dir = QCoreApplication::applicationDirPath();
 //    QString data_dir = application_dir + "/../data";

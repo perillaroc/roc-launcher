@@ -11,6 +11,7 @@ class QMenu;
 class QStandardItemModel;
 QT_END_NAMESPACE
 
+class QHotkey;
 class DatabaseManager;
 
 namespace Ui {
@@ -53,6 +54,7 @@ private:
 
     QPointer<QMenu> system_tray_menu_;
     QPointer<QSystemTrayIcon> system_tray_icon_;
+    QPointer<QHotkey> hot_key_;
 
     QPointer<DatabaseManager> database_manager_;
 

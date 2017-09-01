@@ -1,4 +1,5 @@
 include(../../roc-launcher.pri)
+include(../../vendor/QHotkey/qhotkey.pri)
 
 QT       += core gui widgets sql winextras concurrent
 
