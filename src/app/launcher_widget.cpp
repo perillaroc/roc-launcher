@@ -13,6 +13,7 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QtConcurrent>
+#include <QMessageBox>
 
 #include <QtDebug>
 
@@ -56,6 +57,10 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
         }
     });
     hot_key_->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_Space), true);
+    if(!hot_key_->isRegistered())
+    {
+        QMessageBox::warning(0, tr("Warn"), tr("hot key is conflict. Please set a new one."));
+    }
     qDebug()<<"[LauncherWidget::LauncherWidget] hot key is registered:"<<hot_key_->isRegistered();
 
 //    QString application_dir = QCoreApplication::applicationDirPath();
