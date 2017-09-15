@@ -52,7 +52,7 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
         {
             ui->link_view->hide();
             ui->input_edit->setFocus();
-            ui->input_edit->selectAll();
+            ui->input_edit->selectAll(); 
             showNormal();
         }
     });

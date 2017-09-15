@@ -1,4 +1,4 @@
-include(roc-launcher.pri)
+include(roc-launcher-base.pri)
 
 TEMPLATE = subdirs
 
