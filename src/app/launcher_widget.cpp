@@ -131,6 +131,7 @@ void LauncherWidget::slotInputTextChanged(const QString &text)
     ui->link_view->show();
 
     selectLink(links.first());
+    ui->link_view->setCurrentIndex(link_model_->index(0,0));
 }
 
 void LauncherWidget::slotInputKeyDownPressed()
