@@ -29,14 +29,16 @@ SOURCES += \
     launcher_widget.cpp \
     database_manager.cpp \
     lnk_tool.cpp \
-    input_link_line_edit.cpp
+    input_link_line_edit.cpp \
+    link_list_view.cpp
 
 HEADERS += \
     launcher_widget.h \
     database_manager.h \
     link.h \
     lnk_tool.h \
-    input_link_line_edit.h
+    input_link_line_edit.h \
+    link_list_view.h
 
 FORMS += \
     launcher_widget.ui

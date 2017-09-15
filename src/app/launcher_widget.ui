@@ -166,7 +166,7 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QListView" name="link_view">
+    <widget class="LinkListView" name="link_view">
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
@@ -200,6 +200,11 @@
    <class>InputLinkLineEdit</class>
    <extends>QLineEdit</extends>
    <header>input_link_line_edit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LinkListView</class>
+   <extends>QListView</extends>
+   <header>link_list_view.h</header>
   </customwidget>
  </customwidgets>
  <resources>

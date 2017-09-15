@@ -8,6 +8,12 @@ InputLinkLineEdit::InputLinkLineEdit(QWidget *parent):
 
 }
 
+void InputLinkLineEdit::slotKeyPressedFromOther(QKeyEvent *event)
+{
+    setFocus();
+    keyPressEvent(event);
+}
+
 void InputLinkLineEdit::keyPressEvent(QKeyEvent *e)
 {
     if(e->key() == Qt::Key_Down)

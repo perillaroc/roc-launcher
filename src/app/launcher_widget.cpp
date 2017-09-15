@@ -46,6 +46,7 @@ LauncherWidget::LauncherWidget(QWidget *parent) :
     });
     connect(ui->link_view, &QListView::activated, this, &LauncherWidget::slotLinkClicked);
     connect(ui->link_view, &QListView::pressed, this, &LauncherWidget::slotLinkClicked);
+    connect(ui->link_view, &LinkListView::signalNotUpDownKeyPressed, ui->input_edit, &InputLinkLineEdit::slotKeyPressedFromOther);
 
     connect(hot_key_, &QHotkey::activated, this, [=](){
         if(this->isHidden())

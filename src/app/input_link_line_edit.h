@@ -12,6 +12,9 @@ signals:
     void signalKeyDownPressed();
     void signalKeyEscPressed();
 
+public:
+    void slotKeyPressedFromOther(QKeyEvent *event);
+
 protected:
     void keyPressEvent(QKeyEvent *e) override;
 };
